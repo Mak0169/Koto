@@ -6,18 +6,12 @@ class User(base):
     id = Column(Integer, primary_key=True)
     email = Column(String, unique=True)
 
-class Holdings(base):
-    __tablename__ = "holdings"
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
+class Deck(base):
+    __tablename__ = "deck"
+    deck_id = Column(Integer, primary_key=True)
 
-class Transaction(base):
-    __tablename__ = "transactions"
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    ticker = Column(String(10))
-    shares = Column(Float)
-    price = Column(Float)
-    amount = Column(Float)
-    type = Column(Enum("buy", "sell", name="transaction_type"))
-    executed_at = Column(DateTime, default=DateTime.utcnow)
+class Card(base):
+    __tablename__ = "card"
+    card_id = Column(Integer, ForeignKey("deck_id"))
+    term = Column(String)
+    definition = Column(String)
