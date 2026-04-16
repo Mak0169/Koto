@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, DateTime, Enum, ForeignKey
 from database import base
 
 class User(base):
@@ -19,5 +19,5 @@ class Transaction(base):
     shares = Column(Float)
     price = Column(Float)
     amount = Column(Float)
-    type = Column(String)
-    executed_at = Column(DateTime)
+    type = Column(Enum("buy", "sell", name="transaction_type"))
+    executed_at = Column(DateTime, default=DateTime.utcnow)
