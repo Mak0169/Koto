@@ -6,6 +6,7 @@ class User(base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     email = Column(String, unique=True)
+    password = Column(String)
 
 class Deck(base):
     __tablename__ = "deck"
