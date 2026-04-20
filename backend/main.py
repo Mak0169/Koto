@@ -8,10 +8,16 @@ import models
 app = FastAPI()
 base.metadata.create_all(engine)
 
+"""
+Opens the webpage.
+"""
 @app.get("/")
 def root():
     return {"message": "Portfolio API is running"}
 
+"""
+This is used to make a profile for new users.
+"""
 @app.post("/register")
 def create_register(user: UserCreate, db: Session = Depends(get_db)):
     hashed_pass = hash_password(user.password)
@@ -19,6 +25,13 @@ def create_register(user: UserCreate, db: Session = Depends(get_db)):
     db.add(new_user)
     db.commit()
     return {"message": "User created successfully"}
+
+"""
+This is used to get the users login credentials.
+"""
+@app.post("/token")
+def login_token(user: UserCreate, db: Session = Depends(get_db)):
+    
 
 if __name__ == "__main__":
     import uvicorn
