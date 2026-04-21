@@ -1,8 +1,8 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from schemas import UserCreate, Token
+from schemas import UserCreate, Token, DeckCreate
 from database import base, engine, get_db
-from auth import hash_password, verify_password, create_access_token
+from auth import hash_password, verify_password, create_access_token, get_current_user
 from crud import get_user
 import models
 
@@ -51,7 +51,20 @@ def login_token(user_cred: UserCreate, db: Session = Depends(get_db)):
             detail="Token creation failed"
         )
     return Token(access_token=access_token, token_type="bearer")
-    
+
+"""
+Allows the user to create a deck and name it.
+"""
+@app.post("/deck")
+def create_deck(
+    deck: DeckCreate,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)):
+
+    new_deck = models.Deck(user_id=current_user.id, name=deck.name)
+    db.add(new_deck)
+    db.commit()
+    return {"message": "Deck created."}
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", reload=True)
