@@ -10,3 +10,7 @@ class Token(BaseModel):
 
 class DeckCreate(BaseModel):
     name: str
+
+class CardCreate(BaseModel):
+    term: str
+    definition: str
