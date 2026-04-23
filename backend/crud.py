@@ -16,5 +16,5 @@ Gets decks that match with user_id
 def get_decks_by_user(db: Session, user_id: int):
     user_decks = db.query(
         models.Deck).filter(
-            models.Deck.user_id == user_id).first()
+            models.Deck.user_id == user_id).all()
     return user_decks

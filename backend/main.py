@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from schemas import UserCreate, Token, DeckCreate, CardCreate
 from database import base, engine, get_db
 from auth import hash_password, verify_password, create_access_token, get_current_user
-from crud import get_user
+from crud import get_user, get_decks_by_user
 import models
 
 app = FastAPI()
@@ -74,11 +74,11 @@ def create_deck(
 
 @app.get("/deck")
 def get_deck(
-    deck: DeckCreate,
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    return
+    user_decks = get_decks_by_user(db, current_user.id)
+    return user_decks
 
 @app.post("/deck/{deck_id}/card")
 def create_card(
