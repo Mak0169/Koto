@@ -3,22 +3,18 @@ from sqlalchemy.orm import Session
 from schemas import UserCreate, Token, DeckCreate, CardCreate
 from database import base, engine, get_db
 from auth import hash_password, verify_password, create_access_token, get_current_user
-from crud import get_user, get_decks_by_user
+from crud import get_user, get_decks_by_user, get_cards_by_deck
 import models
 
 app = FastAPI()
 base.metadata.create_all(engine)
 
-"""
-Opens the webpage.
-"""
+""" Opens the webpage. """
 @app.get("/")
 def root():
     return {"message": "Portfolio API is running"}
 
-"""
-This is used to make a profile for new users.
-"""
+""" This is used to make a profile for new users. """
 @app.post("/register")
 def create_register(
     user: UserCreate,
@@ -30,9 +26,7 @@ def create_register(
     db.commit()
     return {"message": "User created successfully"}
 
-"""
-This is used to get the users login credentials.
-"""
+""" This is used to get the users login credentials. """
 @app.post("/token")
 def login_token(
     user_cred: UserCreate,
@@ -58,9 +52,7 @@ def login_token(
         )
     return Token(access_token=access_token, token_type="bearer")
 
-"""
-Allows the user to create a deck and name it.
-"""
+""" Allows the user to create a deck and name it. """
 @app.post("/deck")
 def create_deck(
     deck: DeckCreate,
@@ -72,6 +64,10 @@ def create_deck(
     db.commit()
     return {"message": "Deck created."}
 
+"""
+This grabs the deck from the db
+that is associated with the user.
+"""
 @app.get("/deck")
 def get_deck(
     db: Session = Depends(get_db),
@@ -79,6 +75,19 @@ def get_deck(
 ):
     user_decks = get_decks_by_user(db, current_user.id)
     return user_decks
+
+"""
+This grabs the cards that are based of
+deck_id form the db.
+"""
+@app.get("/deck/{deck_id}/card")
+def get_card(
+    deck_id: int,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user),
+):
+    user_cards = get_cards_by_deck(db, deck_id=deck_id)
+    return user_cards
 
 @app.post("/deck/{deck_id}/card")
 def create_card(

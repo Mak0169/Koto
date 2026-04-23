@@ -14,9 +14,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-"""
-Hashes password.
-"""
+""" Hashes password. """
 def hash_password(password):
     hashed_pass = bcrypt.hash(password)
     return hashed_pass
@@ -28,17 +26,13 @@ and compares it with the one in the db.
 def verify_password(password, hashed_password):
     return bcrypt.verify(password, hashed_password)
 
-"""
-Creates access token.
-"""
+""" Creates access token. """
 def create_access_token(data: dict):
     to_encode = data.copy()
     encode_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM) # type: ignore
     return encode_jwt
 
-"""
-Grabs the user from db for when creating a deck.
-"""
+""" Grabs the user from db for when creating a deck. """
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     decoded_user = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM]) # type: ignore
     email = decoded_user.get("sub")
