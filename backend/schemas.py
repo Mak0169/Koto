@@ -14,3 +14,6 @@ class DeckCreate(BaseModel):
 class CardCreate(BaseModel):
     term: str
     definition: str
+
+class ReviewCreate(BaseModel):
+    was_correct: bool

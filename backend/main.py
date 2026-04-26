@@ -1,6 +1,7 @@
+from datetime import datetime, timedelta
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from schemas import UserCreate, Token, DeckCreate, CardCreate
+from schemas import UserCreate, Token, DeckCreate, CardCreate, ReviewCreate
 from database import base, engine, get_db
 from auth import hash_password, verify_password, create_access_token, get_current_user
 from crud import get_user, get_decks_by_user, get_cards_by_deck
@@ -99,6 +100,24 @@ def create_card(
     db.add(new_card)
     db.commit()
     return {"message": "Card Created."}
+
+@app.post("/deck/{deck_id}/card/{card_id}/review")
+def deck_review(
+    deck_id: int,
+    card_id: int,
+    review: ReviewCreate,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    if review.was_correct:
+        next_review_at = datetime.utcnow() + timedelta(days=3)
+    else:
+        next_review_at = datetime.utcnow() + timedelta(days=1)
+    
+    new_review = models.Review(user_id=current_user.id, card_id=card_id, next_review_at=next_review_at, was_correct=review.was_correct, review_count=0)
+    db.add(new_review)
+    db.commit()
+    return {"message": "Review Created."}
 
 if __name__ == "__main__":
     import uvicorn
