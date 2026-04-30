@@ -4,7 +4,7 @@ function App() {
   return (
     <div>
       <h1>Koto</h1>
-      <SignUpBotton />
+      <Login />
     </div>
   )
 }
