@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Signup() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     async function handleSignup() {
         const res = await fetch('/api/register', {
@@ -23,8 +25,14 @@ function Signup() {
             <h2>Sign Up</h2>
             <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
-            <br />
-            <button onClick={handleSignup}>Signup</button>
+            <div style={{
+                display: 'flex',
+                gap: '10px',
+                marginTop: '10px'
+            }}>
+                <button onClick={handleSignup}>Sign Up</button>
+                <button onClick={() => navigate('/')}>Back to Login</button>
+            </div>
         </div>
     );
 }
