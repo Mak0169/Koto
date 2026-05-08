@@ -17,6 +17,11 @@ function Login() {
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({ email, password }),
         });
+
+        const result = await res.json()
+        if (res.ok === true) {
+            localStorage.setItem('jsonwebtoken', result.access_token);
+        }
     }
 
     return (
