@@ -9,6 +9,7 @@ function Login() {
      */
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
     async function handleLogin() {
@@ -21,6 +22,9 @@ function Login() {
         const result = await res.json()
         if (res.ok === true) {
             localStorage.setItem('jsonwebtoken', result.access_token);
+            navigate('/deck')
+        } else {
+            setErrorMessage('Incorrect login credentials')
         }
     }
 
@@ -35,6 +39,7 @@ function Login() {
             <h2>Login</h2>
             <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
+            {errorMessage && <p className="error-text">{errorMessage}</p>}
             <div style={{
                 display: 'flex',
                 gap: '10px',
