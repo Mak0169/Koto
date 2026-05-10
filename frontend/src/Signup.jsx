@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 function Signup() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
     async function handleSignup() {
@@ -12,6 +13,13 @@ function Signup() {
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({ email, password }),
         });
+
+        const result = await res.json()
+        if (res.ok === true) {
+            navigate('/')
+        } else {
+            setErrorMessage('There was an error')
+        }
     }
 
     return (
@@ -25,6 +33,7 @@ function Signup() {
             <h2>Sign Up</h2>
             <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
+            {errorMessage && <p className="error-text">{errorMessage}</p>}
             <div style={{
                 display: 'flex',
                 gap: '10px',
