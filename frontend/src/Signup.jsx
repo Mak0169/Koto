@@ -16,7 +16,7 @@ function Signup() {
 
         const result = await res.json()
         if (res.ok === true) {
-            navigate('/')
+            navigate("/")
         } else {
             setErrorMessage('There was an error')
         }

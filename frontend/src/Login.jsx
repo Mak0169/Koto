@@ -28,6 +28,21 @@ function Login() {
         }
     }
 
+    /**
+     *  Admin login bypasses the normal credential check.
+     *  Hitting this logs straight into the dashboard.
+     */
+    async function handleAdminLogin() {
+        const res = await fetch('/api/token/admin', { method: 'POST' });
+        const result = await res.json()
+        if (res.ok === true) {
+            localStorage.setItem('jsonwebtoken', result.access_token);
+            navigate('/deck')
+        } else {
+            setErrorMessage('Admin login failed')
+        }
+    }
+
     return (
         <div style={{
             display: 'flex',
@@ -47,6 +62,7 @@ function Login() {
             }}>
                 <button onClick={handleLogin}>Login</button>
                 <button onClick={() => navigate('/signup')}>Signup</button>
+                <button onClick={handleAdminLogin}>Admin</button>
             </div>
         </div>
     );
