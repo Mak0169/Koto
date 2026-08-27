@@ -71,6 +71,34 @@ function Dashboard() {
         }
     }
 
+    async function handleDeleteDeck(deckId) {
+        if (!window.confirm('Delete this deck and all of its flashcards?')) {
+            return;
+        }
+
+        const res = await fetch(`/api/deck/${deckId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('jsonwebtoken')}`
+            }
+        });
+
+        if (res.ok) {
+            const result = await fetch('/api/deck', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('jsonwebtoken')}`
+                }
+            });
+            if (result.ok) {
+                setDecks(await result.json());
+            }
+        } else {
+            setErrorMessage('Failed to delete deck');
+        }
+    }
+
     function handleLogout() {
         localStorage.removeItem('jsonwebtoken');
         navigate('/');
@@ -119,15 +147,22 @@ function Dashboard() {
             ) : (
                 <ul style={{ width: '100%', padding: 0, listStyle: 'none', textAlign: 'left' }}>
                     {decks.map(deck => (
-                        <li key={deck.deck_id} onClick={() => navigate('/deck', { state: { deck } })}
+                        <li key={deck.deck_id} onClick={() => navigate(`/deck/${deck.deck_id}`)}
                             style={{
                                 border: '1px solid var(--border)',
                                 borderRadius: '8px',
                                 padding: '12px',
                                 margin: '10px 0',
-                                cursor: 'pointer'
+                                cursor: 'pointer',
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center'
                             }}>
-                            {deck.name}
+                            <span>{deck.name}</span>
+                            <button onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteDeck(deck.deck_id);
+                            }}>Delete</button>
                         </li>
                     ))}
                 </ul>
