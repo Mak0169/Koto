@@ -18,3 +18,20 @@ I built this project from scratch to learn:
 * React componenent architecture and state management
 * Data engineering fundamentals with Databricks and PySpark
 * Self-hosted deployment with a Raspberry Pi
+### **Setup**
+1. Build the Rust SM-2 module (required before the backend will start):
+   ```
+   cd koto_srs
+   maturin develop --release   # or: pipx run maturin build --release + pip install the wheel
+   cd ..
+   ```
+   This is a compiled PyO3 extension, so it is built from source and intentionally NOT listed in requirements.txt. The installed wheel is version- and platform-specific (e.g. cp313-win_amd64) — build it in the venv you'll run the app in.
+2. Install Python deps:
+   ```
+   pip install -r requirements.txt
+   ```
+3. Configure the environment: copy the `.env` keys (DATABASE_URL, SECRET_KEY, ALGORITHM) — `.env` is gitignored, never commit it.
+4. Run the backend: `uvicorn main:app --reload` from `backend/` and the frontend from `frontend/`.
+### **Tests**
+* Rust SM-2 algorithm: `cd koto_srs; cargo test`
+* Python API (runs against a temporary SQLite DB): `python -m pytest backend -q`

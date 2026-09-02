@@ -14,7 +14,6 @@ function Signup() {
             body: JSON.stringify({ email, password }),
         });
 
-        const result = await res.json()
         if (res.ok === true) {
             navigate("/")
         } else {

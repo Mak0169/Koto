@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class UserCreate(BaseModel):
     email: str
@@ -16,4 +16,4 @@ class CardCreate(BaseModel):
     definition: str
 
 class ReviewCreate(BaseModel):
-    was_correct: bool
+    quality: int = Field(ge=0, le=5)
